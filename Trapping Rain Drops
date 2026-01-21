@@ -1,0 +1,68 @@
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Collections;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
+using System.Text;
+using System;
+
+class Result
+{
+
+    /*
+     * Complete the 'rain_water' function below.
+     *
+     * The function is expected to return an INTEGER.
+     * The function accepts INTEGER_ARRAY hei as parameter.
+     */
+
+    public static int rain_water(List<int> hei)
+    {
+        int i=0;
+        int j = hei.Count-1;
+        int leftMax=hei[i];
+        int rightMax=hei[j];
+        int sum =0;
+        while(i < j){
+            if(leftMax <=rightMax){
+                i++;
+                leftMax = Math.Max(leftMax,hei[i]);
+                sum+= (leftMax-hei[i] > 0 ?leftMax-hei[i] : 0) ;
+                
+            }
+            else{
+                j--;
+                rightMax = Math.Max(rightMax,hei[j]);
+                sum+= (rightMax-hei[j] > 0 ?rightMax-hei[j] : 0);
+            }
+        }
+        return sum;
+
+    }
+
+}
+
+class Solution
+{
+    public static void Main(string[] args)
+    {
+        TextWriter textWriter = new StreamWriter(@System.Environment.GetEnvironmentVariable("OUTPUT_PATH"), true);
+
+        int n = Convert.ToInt32(Console.ReadLine().Trim());
+
+        List<int> hei = Console.ReadLine().TrimEnd().Split(' ').ToList().Select(heiTemp => Convert.ToInt32(heiTemp)).ToList();
+
+        int result = Result.rain_water(hei);
+
+        textWriter.WriteLine(result);
+
+        textWriter.Flush();
+        textWriter.Close();
+    }
+}
