@@ -1,0 +1,91 @@
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Collections;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
+using System.Text;
+using System;
+
+class Result
+{
+
+    /*
+     * Complete the 'median_array' function below.
+     *
+     * The function is expected to return a STRING.
+     * The function accepts following parameters:
+     *  1. INTEGER_ARRAY nums1
+     *  2. INTEGER_ARRAY nums2
+     */
+
+    public static string median_array(List<int> nums1, List<int> nums2)
+    {
+        if(nums1.Count > nums2.Count){
+            return median_array(nums2,nums1);
+        }
+        
+        int x = nums1.Count;
+        int y = nums2.Count;
+        
+        int left = 0;
+        int right = x;
+        while(left<=right){
+            int partitionX = (left+right)/2;
+            int partitionY = ((x+y+1)/2)-partitionX;
+            
+            int maxLeftX = partitionX == 0? int.MinValue:nums1[partitionX-1];
+            int minRightX = partitionX == x? int.MaxValue:nums1[partitionX];
+                
+            int maxLeftY = partitionY == 0? int.MinValue:nums2[partitionY-1];
+            int minRightY = partitionY == y? int.MaxValue:nums2[partitionY];
+            
+            if(maxLeftX <= minRightY && minRightX >=maxLeftY){
+                if((x+y)%2==0){
+                    return ((Math.Max(maxLeftX,maxLeftY)+Math.Min(minRightX,minRightY))/2.0).ToString("F1"); 
+                }
+                else{
+                    return(Math.Max(maxLeftX,maxLeftY)).ToString("F1");
+                }
+            }
+            else if(maxLeftX>minRightY){
+                right = partitionX-1;
+            }
+            else{
+                left = partitionX+1;
+            }
+            
+        }
+        return "";
+
+    }
+
+}
+
+class Solution
+{
+    public static void Main(string[] args)
+    {
+        TextWriter textWriter = new StreamWriter(@System.Environment.GetEnvironmentVariable("OUTPUT_PATH"), true);
+
+        int n = Convert.ToInt32(Console.ReadLine().Trim());
+
+        int m = Convert.ToInt32(Console.ReadLine().Trim());
+
+        List<int> nums1 = Console.ReadLine().TrimEnd().Split(' ').ToList().Select(nums1Temp => Convert.ToInt32(nums1Temp)).ToList();
+
+        List<int> nums2 = Console.ReadLine().TrimEnd().Split(' ').ToList().Select(nums2Temp => Convert.ToInt32(nums2Temp)).ToList();
+
+        string result = Result.median_array(nums1, nums2);
+
+        textWriter.WriteLine(result);
+
+        textWriter.Flush();
+        textWriter.Close();
+    }
+}
