@@ -1,0 +1,84 @@
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Collections;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
+using System.Text;
+using System;
+
+class Result
+{
+
+    /*
+     * Complete the 'kthSmallest' function below.
+     *
+     * The function is expected to return an INTEGER.
+     * The function accepts following parameters:
+     *  1. INTEGER n
+     *  2. INTEGER_ARRAY arr1
+     *  3. INTEGER m
+     *  4. INTEGER_ARRAY arr2
+     *  5. INTEGER k
+     */
+
+    public static int kthSmallest(int n, List<int> arr1, int m, List<int> arr2, int k)
+    {
+       if(n>m){
+           return kthSmallest(m,arr2,n,arr1,k);
+       }
+        
+        int low = Math.Max(0,k-m);
+        int high = Math.Min(k,n);
+        while(low <= high){
+            int partitionX = (low+high)/2;
+            int partitionY = k-partitionX;
+            int maxLeftX = partitionX==0?int.MinValue:arr1[partitionX-1];
+            int minRightX = partitionX==n?int.MaxValue:arr1[partitionX];        
+            int maxLeftY = partitionY==0?int.MinValue:arr2[partitionY-1];
+            int minRightY = partitionY==m?int.MaxValue:arr2[partitionY];
+            
+            if(maxLeftX <= minRightY && maxLeftY <=minRightX){
+                return  Math.Max(maxLeftX,maxLeftY);
+            }
+            else if(maxLeftX > minRightY){
+                high = partitionX-1;
+            }
+            else{
+                low = partitionX +1;   
+            }       
+        }
+         return 1;  
+    }
+
+}
+
+class Solution
+{
+    public static void Main(string[] args)
+    {
+        TextWriter textWriter = new StreamWriter(@System.Environment.GetEnvironmentVariable("OUTPUT_PATH"), true);
+
+        int n = Convert.ToInt32(Console.ReadLine().Trim());
+
+        List<int> arr1 = Console.ReadLine().TrimEnd().Split(' ').ToList().Select(arr1Temp => Convert.ToInt32(arr1Temp)).ToList();
+
+        int m = Convert.ToInt32(Console.ReadLine().Trim());
+
+        List<int> arr2 = Console.ReadLine().TrimEnd().Split(' ').ToList().Select(arr2Temp => Convert.ToInt32(arr2Temp)).ToList();
+
+        int k = Convert.ToInt32(Console.ReadLine().Trim());
+
+        int result = Result.kthSmallest(n, arr1, m, arr2, k);
+
+        textWriter.WriteLine(result);
+
+        textWriter.Flush();
+        textWriter.Close();
+    }
+}
