@@ -1,0 +1,30 @@
+ public static SinglyLinkedListNode rearrangeList(SinglyLinkedListNode head, int k)
+    {
+        SinglyLinkedListNode dummy = new SinglyLinkedListNode(0);
+        dummy.next = head;
+        SinglyLinkedListNode groupPrev = dummy;
+        while(true){
+            SinglyLinkedListNode kth = groupPrev;
+            for(int i=0;i<k &&kth !=null;i++){
+                kth = kth.next;
+            }
+            if(kth ==null){
+                break;
+            }
+            SinglyLinkedListNode groupNext = kth.next;
+            SinglyLinkedListNode curr = groupPrev.next;
+            SinglyLinkedListNode prev = groupNext;
+            while(curr !=groupNext){
+                SinglyLinkedListNode temp = curr.next;
+                curr.next = prev;
+                prev = curr;
+                curr = temp;
+            }
+            
+            SinglyLinkedListNode temphead = groupPrev.next;
+            groupPrev.next=kth;
+            groupPrev = temphead;
+        }
+        return dummy.next;
+
+}
